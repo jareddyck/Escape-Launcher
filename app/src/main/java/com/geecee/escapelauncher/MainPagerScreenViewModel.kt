@@ -81,6 +81,7 @@ class MainPagerScreenViewModel @Inject constructor(
     )
     val doubleTapToLock = launcherBehaviorRepository.doubleTapToLock
     val hapticFeedBackEnabled = launcherBehaviorRepository.hapticFeedBackEnabled
+    val swipeRightAction = launcherBehaviorRepository.swipeRightAction
 
     // Which gesture direction (if any) the search page was most recently entered from, so its
     // content can animate in from - and later back out to - that same edge (see

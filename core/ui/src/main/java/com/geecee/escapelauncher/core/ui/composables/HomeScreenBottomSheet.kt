@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.geecee.escapelauncher.core.model.LauncherItem
 import com.geecee.escapelauncher.core.model.AppAction
+import com.geecee.escapelauncher.core.ui.utils.swipeRightToTrigger
 
 /**
  * Bottom Sheet home screen
@@ -42,7 +43,8 @@ fun HomeScreenBottomSheet(
     onDismissRequest: () -> Unit,
     sheetState: SheetState? = null,
     shortcutActions: List<AppAction> = listOf(),
-    relatedItemActions: List<AppAction> = listOf()
+    relatedItemActions: List<AppAction> = listOf(),
+    swipeRightToDrillInEnabled: Boolean = false
 ) {
     val screenHeight = LocalWindowInfo.current.containerDpSize.height
 
@@ -83,7 +85,7 @@ fun HomeScreenBottomSheet(
             Column(Modifier.padding(start = 47.dp, bottom = 50.dp)) {
                 if (relatedItemActions.isNotEmpty()) {
                     relatedItemActions.filter { it.isVisible(subject) }.forEach { action ->
-                        AppActionItem(action, subject)
+                        AppActionItem(action, subject, swipeRightToDrillInEnabled)
                     }
 
                     HorizontalDivider(Modifier.padding(vertical = 15.dp))
@@ -91,14 +93,14 @@ fun HomeScreenBottomSheet(
 
                 if (shortcutActions.isNotEmpty()) {
                     shortcutActions.filter { it.isVisible(subject) }.forEach { action ->
-                        AppActionItem(action, subject)
+                        AppActionItem(action, subject, swipeRightToDrillInEnabled)
                     }
 
                     HorizontalDivider(Modifier.padding(vertical = 15.dp))
                 }
 
                 actions.filter { it.isVisible(subject) }.forEach { action ->
-                    AppActionItem(action, subject)
+                    AppActionItem(action, subject, swipeRightToDrillInEnabled)
                 }
             }
         }
@@ -107,11 +109,18 @@ fun HomeScreenBottomSheet(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun AppActionItem(action: AppAction, subject: LauncherItem) {
+private fun AppActionItem(action: AppAction, subject: LauncherItem, swipeRightToDrillInEnabled: Boolean) {
     val label = action.label ?: action.labelRes?.let { stringResource(it) } ?: ""
     Row(
         modifier = Modifier
-            .combinedClickable(onClick = { action.onClick(subject) })
+            .swipeRightToTrigger(
+                enabled = swipeRightToDrillInEnabled && action.onLongPressOrSwipeRight != null,
+                onTrigger = { action.onLongPressOrSwipeRight?.invoke(subject) }
+            )
+            .combinedClickable(
+                onClick = { action.onClick(subject) },
+                onLongClick = action.onLongPressOrSwipeRight?.let { cb -> { cb(subject) } }
+            )
             .fillMaxWidth()
     ) {
         Text(

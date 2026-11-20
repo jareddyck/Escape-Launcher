@@ -41,6 +41,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.geecee.escapelauncher.feature.settings.SettingsNavKey
 import com.geecee.escapelauncher.core.common.configureStatusBar
 import com.geecee.escapelauncher.core.model.SearchGestureDirection
+import com.geecee.escapelauncher.core.model.SwipeRightAction
 import com.geecee.escapelauncher.core.ui.R
 import com.geecee.escapelauncher.core.ui.composables.EscapeHeader
 import com.geecee.escapelauncher.core.ui.composables.EscapeSubhead
@@ -424,6 +425,32 @@ fun MainSettingsPage(
                         )
                     },
                     isTopOfGroup = true,
+                    isBottomOfGroup = false
+                )
+            }
+
+            item(key = "swipe_right_action") {
+                val swipeRightOptions = listOf(
+                    stringResource(R.string.open_item_menu),
+                    stringResource(R.string.show_screen_time)
+                )
+
+                SettingsSingleChoiceSegmentedButtons(
+                    label = stringResource(id = R.string.swipe_right_action),
+                    options = swipeRightOptions,
+                    selectedIndex = when (uiState.swipeRightAction) {
+                        SwipeRightAction.OPEN_ITEM_MENU -> 0
+                        SwipeRightAction.SHOW_SCREEN_TIME -> 1
+                    },
+                    onSelectedIndexChange = { newIndex ->
+                        mainSettingsPageViewModel.setSwipeRightAction(
+                            when (newIndex) {
+                                0 -> SwipeRightAction.OPEN_ITEM_MENU
+                                else -> SwipeRightAction.SHOW_SCREEN_TIME
+                            }
+                        )
+                    },
+                    isTopOfGroup = false,
                     isBottomOfGroup = true
                 )
             }

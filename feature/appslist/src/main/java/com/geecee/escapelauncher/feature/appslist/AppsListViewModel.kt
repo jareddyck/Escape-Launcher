@@ -29,6 +29,7 @@ import com.geecee.escapelauncher.core.ui.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -156,6 +157,17 @@ class AppsListViewModel @Inject constructor(
     val relatedItemsPickerTarget: StateFlow<LauncherItem?> = _relatedItemsPickerTarget.asStateFlow()
     fun dismissRelatedItemsPicker() {
         _relatedItemsPickerTarget.value = null
+    }
+
+    // Drilling into a related item's own popup from inside the current one - closes the current
+    // sheet first (no stack: there's nothing to go "back" to once the drilled-into popup closes).
+    fun drillIntoRelatedItem(item: LauncherItem) {
+        viewModelScope.launch {
+            _showBottomSheet.value = false
+            delay(300)
+            _bottomSheetApp.value = item
+            _showBottomSheet.value = true
+        }
     }
 
     // Actions
@@ -299,7 +311,8 @@ class AppsListViewModel @Inject constructor(
                         viewModelScope.launch {
                             _uiEvent.emit(AppsListUiEvent.LaunchRelatedItem(related))
                         }
-                    }
+                    },
+                    onLongPressOrSwipeRight = { drillIntoRelatedItem(related) }
                 )
             }
         }

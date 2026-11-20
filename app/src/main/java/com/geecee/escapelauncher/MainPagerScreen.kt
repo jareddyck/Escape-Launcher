@@ -44,6 +44,7 @@ import com.geecee.escapelauncher.core.domain.managedprofiles.ManagedProfileType
 import com.geecee.escapelauncher.core.model.InstalledApp
 import com.geecee.escapelauncher.core.model.LauncherItem
 import com.geecee.escapelauncher.core.model.SearchGestureDirection
+import com.geecee.escapelauncher.core.model.SwipeRightAction
 import com.geecee.escapelauncher.core.ui.DefaultSettingsUi
 import com.geecee.escapelauncher.core.ui.R
 import com.geecee.escapelauncher.core.ui.composables.HomeScreenBottomSheet
@@ -181,6 +182,9 @@ fun MainPagerScreen(
 
     val autoOpenSearch by appsListViewModel.searchAutoOpen.collectAsState(initial = DefaultSettings.SEARCH_AUTO_OPEN)
     val searchGestureDirection by viewModel.searchGestureDirection.collectAsState()
+    val swipeRightAction by viewModel.swipeRightAction.collectAsState(
+        initial = SwipeRightAction.valueOf(DefaultSettings.SWIPE_RIGHT_ACTION)
+    )
 
     // Tidy up apps list when it closes or opens
     LaunchedEffect(isAppsListVisible) {
@@ -261,6 +265,7 @@ fun MainPagerScreen(
             },
                 onGoHomeRequest = { globalViewModel.requestToGoHome() },
                 searchGestureDirection = searchGestureDirection,
+                swipeRightAction = swipeRightAction,
                 onSwipeDownOpenSearch = {
                     // Expand the search box (and its keyboard) immediately, in step with the page
                     // transition starting, rather than waiting for the reactive isAppsListVisible
@@ -336,7 +341,8 @@ fun MainPagerScreen(
                                             globalViewModel.requestToGoHome()
                                         },
                                         appsListViewModel = appsListViewModel,
-                                        screenTimeViewModel = screenTimeViewModel
+                                        screenTimeViewModel = screenTimeViewModel,
+                                        swipeRightAction = swipeRightAction
                                     )
                                 }
                             )
@@ -374,6 +380,7 @@ fun MainPagerScreen(
                             onDismissRequest = { appsListViewModel.setBottomSheetVisible(false) },
                             shortcutActions = shortcutActions,
                             relatedItemActions = relatedItemActions,
+                            swipeRightToDrillInEnabled = swipeRightAction == SwipeRightAction.OPEN_ITEM_MENU,
                             sheetState = rememberBottomSheetState(
                                 initialValue = SheetValue.Hidden,
                                 enabledValues = setOf(SheetValue.Hidden, SheetValue.Expanded)

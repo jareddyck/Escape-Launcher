@@ -108,6 +108,9 @@
     <string name="gestures">Gestures</string>
     <string name="down">Down</string>
     <string name="up">Up</string>
+    <string name="swipe_right_action">Swipe right</string>
+    <string name="open_item_menu">Open menu</string>
+    <string name="show_screen_time">Show screen time</string>
     <string name="sponsor">Sponsor</string>
     <string name="font_licences">Font Licences</string>
     <string name="show_weather">Show Weather</string>

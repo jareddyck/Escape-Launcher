@@ -54,6 +54,7 @@ object DefaultSettings {
     const val SEARCH_GESTURE_DIRECTION = "UP"
 
     // Misc
+    const val SWIPE_RIGHT_ACTION = "OPEN_ITEM_MENU"
     const val DOUBLE_TAP_TO_LOCK = true
     const val HIDE_SCREEN_TIME_PAGE = false
     const val SHOW_HIDDEN_APPS_IN_SEARCH = false

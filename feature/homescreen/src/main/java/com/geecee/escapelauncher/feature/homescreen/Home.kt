@@ -59,6 +59,7 @@ import com.geecee.escapelauncher.core.common.formatScreenTime
 import com.geecee.escapelauncher.core.model.InstalledApp
 import com.geecee.escapelauncher.core.model.LauncherItem
 import com.geecee.escapelauncher.core.model.SearchGestureDirection
+import com.geecee.escapelauncher.core.model.SwipeRightAction
 import com.geecee.escapelauncher.core.ui.DefaultSettingsUi
 import com.geecee.escapelauncher.core.ui.composables.Clock
 import com.geecee.escapelauncher.core.ui.composables.FirstTimeHelp
@@ -89,6 +90,7 @@ fun HomeScreen(
     onAppOpened: (app: InstalledApp) -> Unit = {},
     onGoHomeRequest: () -> Unit = {},
     searchGestureDirection: SearchGestureDirection = SearchGestureDirection.UP,
+    swipeRightAction: SwipeRightAction = SwipeRightAction.OPEN_ITEM_MENU,
     onSwipeDownOpenSearch: () -> Unit = {},
     onSwipeUpOpenSearch: () -> Unit = {},
     clockViewModel: ClockViewModel = hiltViewModel(),
@@ -140,6 +142,12 @@ fun HomeScreen(
             is LauncherItem.Shortcut -> homeScreenViewModel.openShortcut(item.shortcut)
         }
         doHapticFeedBack(haptics, hapticFeedbackEnabled)
+    }
+
+    val openItemMenu: (LauncherItem) -> Unit = { item ->
+        homeScreenViewModel.setBottomSheetVisible(true)
+        homeScreenViewModel.setBottomSheetApp(item)
+        doHapticFeedBack(hapticFeedback = haptics, enabled = hapticFeedbackEnabled)
     }
 
     // Handle UI Events from ViewModel
@@ -403,11 +411,10 @@ fun HomeScreen(
                     appName = item.displayName,
                     screenTime = formatScreenTime(screenTime),
                     onAppClick = { handleItemClick(item) },
-                    onAppLongClick = {
-                        homeScreenViewModel.setBottomSheetVisible(true)
-                        homeScreenViewModel.setBottomSheetApp(item)
-                        doHapticFeedBack(hapticFeedback = haptics, enabled = hapticFeedbackEnabled)
-                    },
+                    onAppLongClick = { openItemMenu(item) },
+                    onAppSwipeRight = if (swipeRightAction == SwipeRightAction.OPEN_ITEM_MENU) {
+                        { openItemMenu(item) }
+                    } else null,
                     showScreenTime = showScreenTimeApp && item is LauncherItem.App,
                     modifier = Modifier,
                     alignment = homeAlignment,
@@ -448,6 +455,7 @@ fun HomeScreen(
                 onDismissRequest = { homeScreenViewModel.setBottomSheetVisible(false) },
                 shortcutActions = shortcutActions,
                 relatedItemActions = relatedItemActions,
+                swipeRightToDrillInEnabled = swipeRightAction == SwipeRightAction.OPEN_ITEM_MENU,
                 sheetState = rememberBottomSheetState(
                     initialValue = SheetValue.Hidden,
                     enabledValues = setOf(SheetValue.Hidden, SheetValue.Expanded)

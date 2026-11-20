@@ -50,6 +50,7 @@ object PreferencesKeys {
     val SEARCH_GESTURE_DIRECTION = stringPreferencesKey(name = "search_gesture_direction")
 
     //Misc
+    val SWIPE_RIGHT_ACTION = stringPreferencesKey(name = "swipe_right_action")
     val DOUBLE_TAP_TO_LOCK = booleanPreferencesKey(name = "double_tap_to_lock")
     val HIDE_SCREEN_TIME_PAGE = booleanPreferencesKey(name = "hide_screen_time_page")
     val SHOW_HIDDEN_APPS_IN_SEARCH = booleanPreferencesKey(name = "show_hidden_apps_in_search")

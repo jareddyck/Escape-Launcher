@@ -37,6 +37,7 @@ import com.geecee.escapelauncher.core.common.DefaultSettings
 import com.geecee.escapelauncher.core.common.formatScreenTime
 import com.geecee.escapelauncher.core.model.InstalledApp
 import com.geecee.escapelauncher.core.model.LauncherItem
+import com.geecee.escapelauncher.core.model.SwipeRightAction
 import com.geecee.escapelauncher.core.ui.DefaultSettingsUi
 import com.geecee.escapelauncher.core.ui.composables.HomeScreenItem
 import com.geecee.escapelauncher.core.ui.utils.doHapticFeedBack
@@ -55,6 +56,7 @@ fun AppsList(
     onGoHomeRequest: () -> Unit = {},
     appsListViewModel: AppsListViewModel = hiltViewModel(),
     screenTimeViewModel: ScreenTimeViewModel = hiltViewModel(LocalActivity.current as ComponentActivity),
+    swipeRightAction: SwipeRightAction = SwipeRightAction.OPEN_ITEM_MENU,
 ) {
     val haptics = LocalHapticFeedback.current
     val appUsageList by screenTimeViewModel.appUsageUiList.collectAsState()
@@ -165,6 +167,9 @@ fun AppsList(
                     screenTime = formatScreenTime(screenTime),
                     onAppClick = { handleItemClick(item) },
                     onAppLongClick = { handleItemLongClick(item) },
+                    onAppSwipeRight = if (swipeRightAction == SwipeRightAction.OPEN_ITEM_MENU) {
+                        { handleItemLongClick(item) }
+                    } else null,
                     showScreenTime = showScreenTimeApp && item is LauncherItem.App,
                     modifier = Modifier,
                     alignment = appsListAlignment,

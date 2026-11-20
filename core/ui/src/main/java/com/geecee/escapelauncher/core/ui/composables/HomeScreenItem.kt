@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.geecee.escapelauncher.core.ui.utils.escapeShadow
+import com.geecee.escapelauncher.core.ui.utils.swipeRightToTrigger
 
 
 /**
@@ -30,6 +31,7 @@ fun HomeScreenItem(
     screenTime: String? = null,
     onAppClick: () -> Unit,
     onAppLongClick: () -> Unit,
+    onAppSwipeRight: (() -> Unit)? = null,
     showScreenTime: Boolean = false,
     alignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     color: Color = MaterialTheme.colorScheme.primary,
@@ -44,6 +46,10 @@ fun HomeScreenItem(
             Alignment.End -> Arrangement.End
             else -> Arrangement.Center
         }, modifier = modifier
+            .swipeRightToTrigger(
+                enabled = onAppSwipeRight != null,
+                onTrigger = { onAppSwipeRight?.invoke() }
+            )
             .combinedClickable(
                 onClick = onAppClick, onLongClick = onAppLongClick
             )

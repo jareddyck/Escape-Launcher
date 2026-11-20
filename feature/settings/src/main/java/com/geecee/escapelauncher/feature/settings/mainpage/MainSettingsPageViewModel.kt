@@ -10,6 +10,7 @@ import com.geecee.escapelauncher.core.domain.repository.android.AppsRepository
 import com.geecee.escapelauncher.core.domain.repository.android.SystemActionsRepository
 import com.geecee.escapelauncher.core.domain.repository.settings.*
 import com.geecee.escapelauncher.core.model.SearchGestureDirection
+import com.geecee.escapelauncher.core.model.SwipeRightAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,6 +40,7 @@ data class MainSettingsUiState(
     val searchAutoOpen: Boolean = DefaultSettings.SEARCH_AUTO_OPEN,
     val automaticallyOpenAppsInSearch: Boolean = DefaultSettings.AUTOMATICALLY_OPEN_APPS_IN_SEARCH,
     val searchGestureDirection: SearchGestureDirection = SearchGestureDirection.valueOf(DefaultSettings.SEARCH_GESTURE_DIRECTION),
+    val swipeRightAction: SwipeRightAction = SwipeRightAction.valueOf(DefaultSettings.SWIPE_RIGHT_ACTION),
     val hideScreenTimePage: Boolean = DefaultSettings.HIDE_SCREEN_TIME_PAGE,
     val allowAnalytics: Boolean = DefaultSettings.ALLOW_ANALYTICS,
     val isDefaultLauncher: Boolean = false,
@@ -82,6 +84,7 @@ class MainSettingsPageViewModel @Inject constructor(
         searchSettingsRepository.searchAutoOpen,
         searchSettingsRepository.automaticallyOpenAppsInSearch,
         searchSettingsRepository.searchGestureDirection,
+        launcherBehaviorRepository.swipeRightAction,
         screenTimeSettingsRepository.hideScreenTimePage,
         launcherBehaviorRepository.allowAnalyitics,
         _isDefaultLauncher,
@@ -118,10 +121,11 @@ class MainSettingsPageViewModel @Inject constructor(
             searchAutoOpen = args[15] as Boolean,
             automaticallyOpenAppsInSearch = args[16] as Boolean,
             searchGestureDirection = args[17] as SearchGestureDirection,
-            hideScreenTimePage = args[18] as Boolean,
-            allowAnalytics = args[19] as Boolean,
-            isDefaultLauncher = args[20] as Boolean,
-            isAccessibilityServiceEnabled = args[21] as Boolean
+            swipeRightAction = args[18] as SwipeRightAction,
+            hideScreenTimePage = args[19] as Boolean,
+            allowAnalytics = args[20] as Boolean,
+            isDefaultLauncher = args[21] as Boolean,
+            isAccessibilityServiceEnabled = args[22] as Boolean
         )
     }.stateIn(
         scope = viewModelScope,
@@ -267,6 +271,12 @@ class MainSettingsPageViewModel @Inject constructor(
     fun setSearchGestureDirection(value: SearchGestureDirection) {
         viewModelScope.launch {
             searchSettingsRepository.setSearchGestureDirection(value)
+        }
+    }
+
+    fun setSwipeRightAction(value: SwipeRightAction) {
+        viewModelScope.launch {
+            launcherBehaviorRepository.setSwipeRightAction(value)
         }
     }
 
